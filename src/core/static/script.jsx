@@ -16,7 +16,7 @@ class LoginSignUpForm extends React.Component {
 
       // TODO
       if(password !== confirmPassword) {
-        throw "Error";
+        throw 'Error';
       }
 
       const response = await fetch(
@@ -34,7 +34,27 @@ class LoginSignUpForm extends React.Component {
         }
       );
       const user = await response.json();
+      // TODO Log the user in or something
     } else {
+      const username = e.target.querySelector('[name="username"]').value;
+      const password = e.target.querySelector('[name="password"]').value;
+
+      const response = await fetch(
+        '/api/v1/auth',
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            'username': username,
+            'password': password
+          })
+        }
+      );
+      const user = await response.json();
+      // TODO Refresh the data store user
     }
   }
 

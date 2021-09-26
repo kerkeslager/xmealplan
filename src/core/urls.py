@@ -22,5 +22,6 @@ from . import api_views
 urlpatterns = (
     path('admin/', admin.site.urls),
     path('', views.index),
+    path('api/v1/auth', api_views.auth),
     path('api/v1/user', api_views.user),
 )
