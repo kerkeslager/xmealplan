@@ -1,5 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang='en'>
+  <meta charset='utf-8'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1'/>
+
+  <link rel='stylesheet' href='{% static "style.css" %}'/>
+
   <script src='https://unpkg.com/react@16/umd/react.production.min.js'></script>
   <script src='https://unpkg.com/react-dom@16/umd/react-dom.production.min.js'></script>
   <script src='https://unpkg.com/babel-standalone@6.15.0/babel.min.js'></script>
@@ -8,17 +15,6 @@
     <div id='app'>
     </div>
 
-    <script type='text/babel'>
-      class Hello extends React.Component {
-        render() {
-          return <p>Hello, world</p>
-        }
-      }
-
-      ReactDOM.render(
-        <Hello />,
-        document.getElementById('app')
-      );
-    </script>
+    <script type='text/babel' src='{% static "script.jsx" %}'></script>
   </body>
 </html>
