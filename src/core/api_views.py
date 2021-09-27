@@ -39,7 +39,9 @@ class UserViewSet(viewsets.ViewSet):
         assert username
         assert password
 
-        User.objects.create_user(username, password=password)
+        user = User.objects.create_user(username, password=password)
+
+        login(request, user)
 
         return Response({}, status=HTTP_201_CREATED)
 

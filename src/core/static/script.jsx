@@ -1,3 +1,17 @@
+const Cookie = {
+  get: name => {
+    name += '=';
+    let decodedCookies = decodeURIComponent(document.cookie).split(';');
+    for(let c of decodedCookies) {
+      c = c.replace(/^\s\s*/,'');
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length);
+      }
+    }
+    return null;
+  }
+};
+
 class LoginSignUpForm extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +38,8 @@ class LoginSignUpForm extends React.Component {
         {
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken'),
           },
           method: 'POST',
           body: JSON.stringify({
@@ -34,7 +49,9 @@ class LoginSignUpForm extends React.Component {
         }
       );
       const user = await response.json();
-      // TODO Log the user in or something
+      // TODO Check result
+
+      this.props.onComplete();
     } else {
       const username = e.target.querySelector('[name="username"]').value;
       const password = e.target.querySelector('[name="password"]').value;
@@ -44,7 +61,8 @@ class LoginSignUpForm extends React.Component {
         {
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookie.get('csrftoken'),
           },
           method: 'POST',
           body: JSON.stringify({
@@ -54,7 +72,8 @@ class LoginSignUpForm extends React.Component {
         }
       );
       const user = await response.json();
-      // TODO Refresh the data store user
+      // TODO Check result
+      this.props.onComplete();
     }
   }
 
@@ -118,6 +137,45 @@ class LoginSignUpForm extends React.Component {
   }
 }
 
+class Loading extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      timer: 0
+    };
+
+    // Increment the timer every third of a second
+    setInterval(
+      () => {
+        this.setState({ timer: (this.state.timer + 1) % 20 });
+      },
+      100
+    );
+  }
+
+  render() {
+    const sup = {
+      verticalAlign: 'super',
+      lineHeight: '1pt'
+    };
+
+    if(this.state.timer % 20 === 0) {
+      return <span>..<span style={sup}>.</span></span>;
+    }
+    if(this.state.timer % 20 === 1) {
+      return <span>.<span style={sup}>..</span></span>;
+    }
+    if(this.state.timer % 20 === 2) {
+      return <span><span style={sup}>..</span>.</span>;
+    }
+    if(this.state.timer % 20 === 3) {
+      return <span><span style={sup}>.</span>..</span>;
+    }
+
+    return '...';
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -140,16 +198,39 @@ class App extends React.Component {
     this.setState({ user: user });
   }
 
+  async logout(e) {
+    e.preventDefault();
+    const response = await fetch(
+      '/api/v1/auth',
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': Cookie.get('csrftoken'),
+        },
+        method: 'DELETE',
+        body: JSON.stringify({})
+      }
+    );
+    const user = await response.json();
+
+    this.loadUser();
+  }
+
   render() {
     if(this.state.user === null) {
-      return '...';
+      return <Loading/>;
     }
 
     if(!this.state.user.is_authenticated) {
-      return <LoginSignUpForm/>;
+      return <LoginSignUpForm onComplete={this.loadUser.bind(this)}/>;
     }
 
-    return <p>Hello, { this.state.user.name }</p>
+    return <p>
+      Hello, { this.state.user.name }. <a href='#' onClick={this.logout.bind(this)}>Logout</a>
+      <br/>
+      <Loading/>
+    </p>;
   }
 }
 
