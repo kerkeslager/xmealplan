@@ -189,7 +189,7 @@ class App extends React.Component {
 
   async loadUser() {
     const response = await fetch(
-      '/api/v1/user',
+      '/api/v1/user/me',
       {
         'headers': { 'Accept': 'application/json' }
       }

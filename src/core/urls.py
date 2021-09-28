@@ -24,4 +24,7 @@ urlpatterns = (
     path('', views.index),
     path('api/v1/auth', api_views.auth),
     path('api/v1/user', api_views.user),
+    path('api/v1/user/me', api_views.me),
+    path('api/v1/plan', api_views.plan_list),
+    path('api/v1/plan/<uuid:uuid>', api_views.plan_detail),
 )
