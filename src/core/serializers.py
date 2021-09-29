@@ -9,7 +9,6 @@ class PlanSerializer(serializers.ModelSerializer):
         model = models.Plan
         fields = (
             'id',
-            'is_selected',
             'name',
             'starch',
             'fruit',

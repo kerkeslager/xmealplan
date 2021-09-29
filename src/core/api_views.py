@@ -61,7 +61,7 @@ class MeViewSet(viewsets.ViewSet):
         return Response({
             'is_authenticated': True,
             'name': request.user.username,
-            'plan': request.user.plans.filter(is_selected=True).first(),
+            'plan': request.user.profile.selected_plan,
         })
 
 me = MeViewSet.as_view({

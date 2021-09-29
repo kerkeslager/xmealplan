@@ -176,6 +176,94 @@ class Loading extends React.Component {
   }
 }
 
+class PlanCreate extends React.Component {
+  render() {
+    const onSubmit = e => {
+      console.log(e);
+    };
+
+    const formStyle = {
+      display: 'flex',
+      flexDirection:'column',
+      alignItems:'flexStart',
+      width: '100%',
+      height: '100%'
+    };
+
+    const formRowStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flexStart',
+      margin: '0 0 0.5rem 0'
+    };
+
+    return <div>
+      <h1>Create your Exchange Meal Plan!</h1>
+      <form onSubmit={onSubmit} style={formStyle}>
+        <span style={formRowStyle}>
+          <label htmlFor='name'>name</label>
+          <input type='text' name='name' value='My Meal Plan'></input>
+        </span>
+
+        <p>Every day I want to eat:</p>
+
+        <span style={formRowStyle}>
+          <label htmlFor='starch'>starch</label>
+          <input type='number' name='starch' step='1' pattern='\d+'></input>
+        </span>
+
+        <span style={formRowStyle}>
+          <label htmlFor='fruit'>fruit</label>
+          <input type='number' name='fruit' step='1' pattern='\d+'></input>
+        </span>
+
+        <span style={formRowStyle}>
+          <label htmlFor='dairy'>dairy</label>
+          <input type='number' name='dairy' step='1' pattern='\d+'></input>
+        </span>
+
+        <span style={formRowStyle}>
+          <label htmlFor='vegetable'>vegetable</label>
+          <input type='number' name='vegetable' step='1' pattern='\d+'></input>
+        </span>
+
+        <span style={formRowStyle}>
+          <label htmlFor='protein'>protein</label>
+          <input type='number' name='protein' step='1' pattern='\d+'></input>
+        </span>
+
+        <span style={formRowStyle}>
+          <label htmlFor='fat'>fat</label>
+          <input type='number' name='fat' step='1' pattern='\d+'></input>
+        </span>
+
+        <input type='submit' value='save'>
+        </input>
+      </form>
+    </div>;
+  }
+}
+
+class Wrapper extends React.Component {
+  render() {
+    return <div>
+      <header style={{marginBottom: '1rem'}}>
+        Hello, { this.props.user.name }. &nbsp;
+        <a href='#' onClick={this.props.onLogout}>Logout</a>
+      </header>
+
+      <main>
+        { this.props.children }
+      </main>
+
+      <footer style={{marginTop: '1rem'}}>
+        All code is released under the AGPL 3.0. &nbsp;
+        <a href='https://github.com/kerkeslager/xmealplan'>Code</a>
+      </footer>
+    </div>;
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -226,11 +314,15 @@ class App extends React.Component {
       return <LoginSignUpForm onComplete={this.loadUser.bind(this)}/>;
     }
 
-    return <p>
-      Hello, { this.state.user.name }. <a href='#' onClick={this.logout.bind(this)}>Logout</a>
-      <br/>
+    if(!this.state.user.plan) {
+      return <Wrapper user={this.state.user}>
+        <PlanCreate />
+      </Wrapper>;
+    }
+
+    return <Wrapper user={this.state.user} onLogout={this.logout.bind(this)}>
       <Loading/>
-    </p>;
+    </Wrapper>;
   }
 }
 
